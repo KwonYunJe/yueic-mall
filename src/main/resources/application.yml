@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: demo
+
+  datasource:
+    url: jdbc:mysql://yueic.duckdns.org:8000/mydb?useSSL=false&serverTimezone=Asia/Seoul
+    username: yueic
+    password: .kyj92035755
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

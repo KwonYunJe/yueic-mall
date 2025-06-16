@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>회원가입</title>
+</head>
+<body>
+<h2>회원가입</h2>
+<!--th:action : 폼 제출 경로 | th:object : 컨트롤러에서 받은 객체 | th:field : 폼 바인딩 -->
+<form th:action="@{/user/register}" th:object="${user}" method="post">
+  <input type="text" th:field="*{username}" placeholder="아이디"/><br>
+  <input type="password" th:field="*{password}" placeholder="비밀번호"/><br>
+  <input type="email" th:field="*{email}" placeholder="이메일"/><br>
+  <button type="submit">회원가입</button>
+</form>
+
+
+<p th:if="${error}" th:text="${error}" style="color:red;"></p>
+</body>
+</html>
