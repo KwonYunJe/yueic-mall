@@ -14,6 +14,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    //유저 생성///////////////////////////
     //해당 메서드로 유니크 값 중복을 방지한다.
     public String register(UserEntity userEntity){
         if(userRepository.existsByUsername(userEntity.getUsername())){
@@ -27,5 +28,11 @@ public class UserService {
         }
         userRepository.save(userEntity);
         return "Sueccess";
+    }
+
+    //로그인 /////////////////////////////
+    public UserEntity findByUsername(String username){
+        //유저레포지토리의 메서드를 사용
+        return userRepository.findByUsername(username);
     }
 }
