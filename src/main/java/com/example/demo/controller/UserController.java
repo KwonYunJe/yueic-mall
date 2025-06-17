@@ -75,4 +75,11 @@ public class UserController {
         }
     }
 
+    //로그아웃 ////////////////////////////
+    @GetMapping("/logout")
+    public String logout(HttpSession httpSession){
+        httpSession.invalidate();
+        return "redirect:/";
+    }
+
 }
