@@ -11,6 +11,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserEntity {
 
+    //유저의 역할 필드, 열거형(enum)으로 정의 (관리자, 판매자, 소비자)
+    public enum Role{
+        ADMIN, SELLER, CUSTOMER
+    }
+
     //PK, 자동 증가
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,4 +31,11 @@ public class UserEntity {
     //제약 조건 : 비움 금지, 중복 금지
     @Column(nullable = false, unique = true)
     private String email;
+
+    //enum 값을 DB에 어떻게 저장할지 지정, 아래는 문자열로 저장함을 의미.
+    @Enumerated(EnumType.STRING)
+    @Column
+    private Role role;
 }
+
+

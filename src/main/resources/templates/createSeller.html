@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>판매자 계정 생성</title></head>
+<body>
+<h1>판매자 계정 생성 (관리자 전용)</h1>
+<form th:action="@{/admin/seller/create}" method="post">
+  <label>아이디: <input type="text" name="username"/></label><br/>
+  <label>비밀번호: <input type="password" name="password"/></label><br/>
+  <label>이메일: <input type="email" name="email"/></label><br/>
+  <button type="submit">생성</button>
+</form>
+<a th:href="@{/}">홈으로</a>
+</body>
+</html>
