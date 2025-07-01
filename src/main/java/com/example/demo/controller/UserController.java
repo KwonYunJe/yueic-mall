@@ -24,7 +24,7 @@ public class UserController {
     @GetMapping("/register")
     public String showRegisterForm(Model model){
         model.addAttribute("user", new UserEntity());
-        return "register";
+        return "customer/register";
     }
 
     //폼 데이터 처리 (성공 or 실패)
@@ -68,7 +68,17 @@ public class UserController {
         if(userEntity != null && userEntity.getPassword().equals(password)){
             //로그인 성공 시 사용자 정보를 세션에 저장
             session.setAttribute("loginUser", userEntity);
-            return "redirect:/";    //메인페이지로 이동
+
+            //로그인 한 유저가 관리자라면
+            if(userEntity.getRole() == UserEntity.Role.ADMIN){
+                return "redirect:/admin/dashboard";
+
+            //로그인 한 유저가 판매자라면
+            }else if(userEntity.getRole() == UserEntity.Role.SELLER){
+                return "redirect:/seller/dashboard";
+            }else{
+                return "redirect:/";
+            }
         }else{
             model.addAttribute("error", "아이디 혹은 비밀번호가 일치하지 않습니다.");
             return "login";

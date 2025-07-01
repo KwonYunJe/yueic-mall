@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>판매자 대시보드</title>
+</head>
+<body>
+<h1>판매자 [[${sellerName}]]님 환영합니다</h1>
+
+<ul>
+    <li>
+        <a th:href="@{/seller/product/create}">상품 등록</a>
+        <a th:href="@{/seller/product/list}">내 상품 목록 보기</a>
+
+    </li>
+    <!-- 필요시 상품 목록, 주문 관리 등 추가 -->
+</ul>
+
+<a th:href="@{/user/logout}">로그아웃</a>
+</body>
+</html>

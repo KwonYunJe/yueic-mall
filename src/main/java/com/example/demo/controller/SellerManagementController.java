@@ -34,7 +34,7 @@ public class SellerManagementController {
 
         //위 조건문을 넘긴다면 관리자이므로
         model.addAttribute("userEntity", new UserEntity());
-        return "createSeller";
+        return "admin/createSeller";
     }
 
     //판매자 페이지에서 넘어오는 메서드
