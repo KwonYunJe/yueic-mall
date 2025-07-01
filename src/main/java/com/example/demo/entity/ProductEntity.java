@@ -1,8 +1,14 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
+@NoArgsConstructor
 public class ProductEntity {
 
     //기본키, IDENTITY 전략 : DB가 자동으로 증가시키는 방식
