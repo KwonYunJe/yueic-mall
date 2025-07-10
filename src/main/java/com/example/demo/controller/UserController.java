@@ -54,7 +54,7 @@ public class UserController {
     //임시로 회원가입에 성공했을 때 리디렉션을 위한 컨트롤러
     @GetMapping("/register-success")
     public String registerSuccess() {
-        return "register-success";
+        return "login";
         // templates/register-success.html 필요
     }
 
@@ -87,14 +87,8 @@ public class UserController {
 
             //로그인 한 유저가 구매자라면
             }else{
-                //카트 가져오기
-                List<CartItemEntity> savedItems = cartItemRepository.findByUser(userEntity);
 
-                //레포지토리에서 받은 리스트를 CartItem으로 형변환
-                List<CartItem> cart = savedItems.stream()
-                        .map(e -> new CartItem(e.getProduct(), e.getQuantity()))
-                        .collect(Collectors.toList());
-                return "redirect:/";
+                return "redirect:/products/productsList";
             }
         }else{
             model.addAttribute("error", "아이디 혹은 비밀번호가 일치하지 않습니다.");
