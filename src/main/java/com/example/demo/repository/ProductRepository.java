@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     //판매자 이름으로 상품 가져오기
-    List<ProductEntity> findBySeller(UserEntity seller);
+    List<ProductEntity> findBySellerId(Long sellerId);
 }
