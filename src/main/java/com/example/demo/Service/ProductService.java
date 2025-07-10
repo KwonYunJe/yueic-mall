@@ -22,8 +22,8 @@ public class ProductService {
     }
 
     //판매자 상품 가져오기
-    public List<ProductEntity> findBySeller(UserEntity seller){
-        return productRepository.findBySeller(seller);
+    public List<ProductEntity> findBySellerId(Long sellerId){
+        return productRepository.findBySellerId(sellerId);
     }
 
     //판매 물품 ID로 검색하기
