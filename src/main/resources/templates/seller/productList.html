@@ -4,11 +4,12 @@
   <title>상품 목록</title>
 </head>
 <body>
-<h2>등록한 상품 목록</h2>
+<h2>전체 상품 목록</h2>
 
 <table border="1">
   <thead>
   <tr>
+    <th>썸네일</th>
     <th>상품명</th>
     <th>가격</th>
     <th>수정</th>
@@ -16,7 +17,13 @@
   </thead>
   <tbody>
   <tr th:each="product : ${products}">
-    <td th:text="${product.name}">상품명</td>
+    <td>
+      <img th:src="${product.thumbnailUrl}" alt="썸네일" width="60" height="60">
+    </td>
+    <td>
+      <a th:href="@{'/product/' + ${product.id}}"
+         th:text="${product.name}">상품명</a>
+    </td>
     <td th:text="${product.price}">가격</td>
     <td>
       <a th:href="@{'/seller/product/edit/' + ${product.id}}">수정</a>
