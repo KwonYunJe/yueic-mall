@@ -16,6 +16,11 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    //모든 상품 가져오기
+    public List<ProductEntity> findAll(){
+        return productRepository.findAll();
+    }
+
     //상품 저장
     public void save(ProductEntity product){
         productRepository.save(product);
