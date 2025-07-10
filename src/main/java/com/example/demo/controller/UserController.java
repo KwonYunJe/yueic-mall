@@ -1,11 +1,17 @@
 package com.example.demo.controller;
 
 import com.example.demo.Service.UserService;
+import com.example.demo.cart.CartItem;
+import com.example.demo.entity.CartItemEntity;
 import com.example.demo.entity.UserEntity;
+import com.example.demo.repository.CartItemRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user")
@@ -13,10 +19,12 @@ public class UserController {
 
     //UserService 생성
     private final UserService userService;
+    private final CartItemRepository cartItemRepository;
 
     //UserController 생성자
-    public UserController(UserService userService){
+    public UserController(UserService userService, CartItemRepository cartItemRepository){
         this.userService = userService;
+        this.cartItemRepository = cartItemRepository;
     }
 
     //계정 생성////////////////////////////////////////////////////////////////////////
@@ -76,7 +84,16 @@ public class UserController {
             //로그인 한 유저가 판매자라면
             }else if(userEntity.getRole() == UserEntity.Role.SELLER){
                 return "redirect:/seller/dashboard";
+
+            //로그인 한 유저가 구매자라면
             }else{
+                //카트 가져오기
+                List<CartItemEntity> savedItems = cartItemRepository.findByUser(userEntity);
+
+                //레포지토리에서 받은 리스트를 CartItem으로 형변환
+                List<CartItem> cart = savedItems.stream()
+                        .map(e -> new CartItem(e.getProduct(), e.getQuantity()))
+                        .collect(Collectors.toList());
                 return "redirect:/";
             }
         }else{
