@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>내 상품 목록</title>
+  <title>상품 목록</title>
 </head>
 <body>
-<h1>내 상품 목록</h1>
+<h2>등록한 상품 목록</h2>
 
 <table border="1">
+  <thead>
   <tr>
     <th>상품명</th>
     <th>가격</th>
     <th>수정</th>
   </tr>
+  </thead>
+  <tbody>
   <tr th:each="product : ${products}">
     <td th:text="${product.name}">상품명</td>
     <td th:text="${product.price}">가격</td>
     <td>
-      <a th:href="@{|/seller/product/edit/${product.id}|}">수정</a>
+      <a th:href="@{'/seller/product/edit/' + ${product.id}}">수정</a>
     </td>
   </tr>
+  </tbody>
 </table>
 
-<a th:href="@{/seller/dashboard}">대시보드로 돌아가기</a>
 </body>
 </html>
