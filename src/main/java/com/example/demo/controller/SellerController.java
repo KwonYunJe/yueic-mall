@@ -16,12 +16,10 @@ import java.util.List;
 public class SellerController {
 
     private final ProductService productService;
-    private final ProductRepository productRepository;
 
     //상품 레포지토리, 서비스 생성자
     public SellerController(ProductService productService, ProductRepository productRepository) {
         this.productService = productService;
-        this.productRepository = productRepository;
     }
 
     //판매자 로그인 후 판매자 대시보드로 이동
@@ -54,7 +52,7 @@ public class SellerController {
         }
 
         productEntity.setSeller(seller);
-        productRepository.save(productEntity);
+        productService.save(productEntity);
 
         return "redirect:/seller/dashboard";
     }
@@ -68,7 +66,7 @@ public class SellerController {
             return "redirect:/";
         }
 
-        List<ProductEntity> products = productService.findBySeller(seller);
+        List<ProductEntity> products = productService.findBySellerId(seller.getId());
         model.addAttribute("products", products);
 
         return  "seller/productList";
