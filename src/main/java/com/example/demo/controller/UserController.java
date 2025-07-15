@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.Service.CartService;
 import com.example.demo.Service.UserService;
 import com.example.demo.cart.CartItem;
 import com.example.demo.entity.CartItemEntity;
@@ -20,11 +21,13 @@ public class UserController {
     //UserService 생성
     private final UserService userService;
     private final CartItemRepository cartItemRepository;
+    private final CartService cartService;
 
     //UserController 생성자
-    public UserController(UserService userService, CartItemRepository cartItemRepository){
+    public UserController(UserService userService, CartItemRepository cartItemRepository, CartService cartService){
         this.userService = userService;
         this.cartItemRepository = cartItemRepository;
+        this.cartService = cartService;
     }
 
     //계정 생성////////////////////////////////////////////////////////////////////////
@@ -87,12 +90,36 @@ public class UserController {
 
             //로그인 한 유저가 구매자라면
             }else{
-
+                List<CartItem> sessionCartItems = (List<CartItem>)  session.getAttribute("cartItems");
+                if(sessionCartItems != null){
+                    cartService.mergeCart(userEntity, sessionCartItems);
+                    session.removeAttribute("cartItems");
+                }
                 return "redirect:/products/productsList";
             }
         }else{
             model.addAttribute("error", "아이디 혹은 비밀번호가 일치하지 않습니다.");
             return "login";
+        }
+    }
+
+    @GetMapping("/dashboard")
+    public String moveDashboard(HttpSession session){
+        UserEntity userEntity = (UserEntity) session.getAttribute("loginUser");
+
+        if (userEntity == null) {
+            return "redirect:/login"; // 로그인 안 되어 있을 경우 처리
+        }
+
+        switch (userEntity.getRole()) {
+            case ADMIN:
+                return "redirect:/admin/dashboard";
+            case SELLER:
+                return "redirect:/seller/dashboard";
+            case CUSTOMER:
+                return "redirect:/customer/dashboard";
+            default:
+                return "/";
         }
     }
 

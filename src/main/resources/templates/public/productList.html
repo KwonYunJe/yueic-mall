@@ -5,7 +5,8 @@
 </head>
 <body>
 <h2>전체 상품 목록</h2>
-
+<!-- 구매자 대시보드 이동 링크 -->
+<a href="/customer/dashboard" class="dashboard-link">마이 페이지</a>
 <table border="1">
   <thead>
   <tr>
@@ -20,7 +21,7 @@
       <img th:src="${product.thumbnailUrl}" alt="썸네일" width="60" height="60">
     </td>
     <td>
-      <a th:href="@{'/product/' + ${product.id}}"
+      <a th:href="@{'/products/product/' + ${product.id}}"
          th:text="${product.name}">상품명</a>
     </td>
     <td th:text="${product.price}">가격</td>

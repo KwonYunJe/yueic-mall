@@ -21,7 +21,7 @@
       <img th:src="${product.thumbnailUrl}" alt="썸네일" width="60" height="60">
     </td>
     <td>
-      <a th:href="@{'/product/' + ${product.id}}"
+      <a th:href="@{'/products/product/' + ${product.id}}"
          th:text="${product.name}">상품명</a>
     </td>
     <td th:text="${product.price}">가격</td>

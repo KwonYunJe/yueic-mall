@@ -92,6 +92,45 @@ public class CartService {
         }
     }
 
+    public void mergeCart(UserEntity user, List<CartItem> sessionCart) {
+        List<CartItemEntity> dbCartItems = cartItemRepository.findByUser(user);
+
+        for (CartItem sessionItem : sessionCart) {
+            boolean isMerged = false;
+
+            for (CartItemEntity dbItem : dbCartItems) {
+                if (sessionItem.getProduct().getId().equals(dbItem.getProduct().getId())) {
+                    dbItem.setQuantity(dbItem.getQuantity() + sessionItem.getQuantity());
+                    cartItemRepository.save(dbItem);
+                    isMerged = true;
+                    break;
+                }
+            }
+
+            if (!isMerged) {
+                // 세션의 카트 아이템을 DB 엔티티로 변환하여 저장
+                CartItemEntity newItem = new CartItemEntity();
+                newItem.setProduct(sessionItem.getProduct());
+                newItem.setQuantity(sessionItem.getQuantity());
+                newItem.setUser(user);
+                cartItemRepository.save(newItem);
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //카트 비우기
     public void clearCart(UserEntity user, HttpSession session) {
         //로그인 한 상태면 DB를 지운다.

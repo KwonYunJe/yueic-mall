@@ -1,0 +1,94 @@
+<!-- 파일 경로: src/main/resources/templates/public/productDetail.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${product.name} + ' - 상품 상세'">상품 상세</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+    }
+    .product-container {
+      max-width: 700px;
+      margin: auto;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .thumbnail {
+      width: 100%;
+      max-height: 400px;
+      object-fit: contain;
+      margin-bottom: 20px;
+    }
+    .product-name {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .product-price {
+      font-size: 24px;
+      color: #27ae60;
+      margin-bottom: 20px;
+    }
+    .seller-name {
+      font-size: 16px;
+      color: #7f8c8d;
+      margin-bottom: 20px;
+    }
+    .cart-form {
+      margin-bottom: 20px;
+    }
+    .cart-form input[type="number"] {
+      width: 60px;
+      padding: 5px;
+      margin-right: 10px;
+    }
+    .cart-form button {
+      padding: 8px 15px;
+      background-color: #e67e22;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .cart-form button:hover {
+      background-color: #d35400;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 10px 15px;
+      background-color: #3498db;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .back-link:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+<div class="product-container">
+  <img class="thumbnail" th:src="${product.thumbnailUrl}" alt="상품 이미지"/>
+
+  <div class="product-name" th:text="${product.name}">상품명</div>
+  <div class="product-price" th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')} + '원'">0원</div>
+  <div class="seller-name" th:text="'판매자: ' + ${product.seller.username}">판매자</div>
+
+  <!-- 장바구니 폼 -->
+  <div th:if="${session.loginUser != null and session.loginUser.role == 'BUYER'}">
+  <form th:action="@{'/customer/cart/add/' + ${product.id}}" method="post" class="cart-form">
+    <label for="quantity">수량:</label>
+    <input type="number" name="quantity" id="quantity" value="1" min="1"/>
+    <button type="submit">장바구니에 담기</button>
+  </form>
+  </div>
+
+  <a href="/products/productsList" class="back-link">← 목록으로 돌아가기</a>
+</div>
+</body>
+</html>

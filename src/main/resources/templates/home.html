@@ -4,13 +4,24 @@
   <title>홈</title>
 </head>
 <body>
-<h1 th:if="${username} != null">
-  [[${username}]] 님 환영합니다!
-  <a th:href="@{/user/logout}">로그아웃</a>
-</h1>
-<h1 th:if="${username} == null">
-  비회원 상태입니다.
-  <a th:href="@{/user/login}">로그인</a>
-</h1>
+<div  th:if="${username} != null">
+  <h1>
+    [[${username}]] 님 환영합니다!
+    <br>
+    <a th:href="@{/user/logout}">로그아웃</a>
+    <br>
+    <a th:href="@{/user/dashboard}">대시보드 이동</a>
+    <br>
+    <a th:href="@{/products/}">상품 보러 가기</a>
+  </h1>
+</div>
+<div  th:if="${username} == null">
+  <h1>
+    비회원 상태입니다.
+    <a th:href="@{/user/login}">로그인</a>
+  </h1>
+</div>
+
+
 </body>
 </html>

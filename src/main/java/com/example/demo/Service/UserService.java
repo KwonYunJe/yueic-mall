@@ -26,6 +26,7 @@ public class UserService {
             System.out.println("이메일 중복");
             return "email duplication";
         }
+        userEntity.setRole(UserEntity.Role.CUSTOMER);
         userRepository.save(userEntity);
         return "Sueccess";
     }
