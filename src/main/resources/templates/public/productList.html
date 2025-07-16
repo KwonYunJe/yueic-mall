@@ -7,6 +7,19 @@
 <h2>전체 상품 목록</h2>
 <!-- 구매자 대시보드 이동 링크 -->
 <a href="/customer/dashboard" class="dashboard-link">마이 페이지</a>
+<br>
+<!-- 검색-->
+<form th:action="@{/products/search}" method="get">
+  <input type="text" name="query" placeholder="상품명 검색" th:value="${query}">
+  <select name="sort">
+    <option value="latest" th:selected="${sort == 'latest'}">최신순</option>
+    <option value="oldest" th:selected="${sort == 'oldest'}">오래된순</option>
+    <option value="priceAsc" th:selected="${sort == 'priceAsc'}">낮은 가격순</option>
+    <option value="priceDesc" th:selected="${sort == 'priceDesc'}">높은 가격순</option>
+  </select>
+  <button type="submit">검색</button>
+</form>
+<br>
 <table border="1">
   <thead>
   <tr>
