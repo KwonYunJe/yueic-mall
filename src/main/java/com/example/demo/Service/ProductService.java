@@ -36,4 +36,31 @@ public class ProductService {
         return productRepository.findById(id).orElse(null);
     }
 
+    //검색, 정렬
+    public List<ProductEntity> search(String query, String sort, Long sellerId) {
+        if (sellerId != null) {
+            switch (sort) {
+                case "priceAsc":
+                    return productRepository.findBySellerIdAndNameContainingOrderByPriceAsc(sellerId, query);
+                case "priceDesc":
+                    return productRepository.findBySellerIdAndNameContainingOrderByPriceDesc(sellerId, query);
+                case "oldest":
+                    return productRepository.findBySellerIdAndNameContainingOrderByCreateTimeAsc(sellerId, query);
+                default: // 최신순
+                    return productRepository.findBySellerIdAndNameContainingOrderByCreateTimeDesc(sellerId, query);
+            }
+        } else {
+            switch (sort) {
+                case "priceAsc":
+                    return productRepository.findByNameContainingOrderByPriceAsc(query);
+                case "priceDesc":
+                    return productRepository.findByNameContainingOrderByPriceDesc(query);
+                case "oldest":
+                    return productRepository.findByNameContainingOrderByCreateTimeAsc(query);
+                default: // 최신순
+                    return productRepository.findByNameContainingOrderByCreateTimeDesc(query);
+            }
+        }
+    }
+
 }
