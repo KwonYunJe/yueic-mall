@@ -24,6 +24,9 @@ public class UserEntity {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @Column(nullable = false, unique = true)
+    private String nickname;
+
     //제약 조건 : 비움 금지
     @Column(nullable = false)
     private String password;
