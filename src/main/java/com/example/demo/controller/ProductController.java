@@ -3,12 +3,14 @@ package com.example.demo.controller;
 import com.example.demo.Service.ProductService;
 import com.example.demo.entity.ProductEntity;
 import com.example.demo.entity.UserEntity;
+import com.example.demo.repository.ProductRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class ProductController {
     private final ProductService productService;
 
     //생성자
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, ProductRepository productRepository) {
         this.productService = productService;
     }
 
@@ -42,6 +44,18 @@ public class ProductController {
             model.addAttribute("product", product);
             return "public/productDetail";
         }
+    }
 
+    //검색, 정렬
+    @GetMapping("/search")
+    public String showSearchProducts(@RequestParam("query") String query,
+                                     @RequestParam(required = false, defaultValue = "latest") String sort,
+                                     @RequestParam(required = false) Long sellerId,
+                                     Model model){
+        List<ProductEntity> products = productService.search(query, sort, sellerId);
+        model.addAttribute("products", products);
+        model.addAttribute("query", query);
+        model.addAttribute("sort", sort);
+        return "public/productList";
     }
 }
