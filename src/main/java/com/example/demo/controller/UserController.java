@@ -3,13 +3,16 @@ package com.example.demo.controller;
 import com.example.demo.Service.CartService;
 import com.example.demo.Service.UserService;
 import com.example.demo.cart.CartItem;
+import com.example.demo.dto.userdto.UserUpdateDto;
 import com.example.demo.entity.CartItemEntity;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.CartItemRepository;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,14 +23,14 @@ public class UserController {
 
     //UserService 생성
     private final UserService userService;
-    private final CartItemRepository cartItemRepository;
     private final CartService cartService;
+    private final PasswordEncoder passwordEncoder;
 
     //UserController 생성자
-    public UserController(UserService userService, CartItemRepository cartItemRepository, CartService cartService){
+    public UserController(UserService userService, CartService cartService, PasswordEncoder passwordEncoder){
         this.userService = userService;
-        this.cartItemRepository = cartItemRepository;
         this.cartService = cartService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     //계정 생성////////////////////////////////////////////////////////////////////////
@@ -67,41 +70,47 @@ public class UserController {
         return "login";     //templates 아래의 login
     }
 
-    //HttpSession session : Spring이 자동으로 넘겨주는 세션 객체
     @PostMapping("/login")
     public String login(@RequestParam String username,
                         @RequestParam String password,
                         Model model,
-                        HttpSession session){
+                        HttpSession session) {
+
         UserEntity userEntity = userService.findByUsername(username);
 
-        //반환되는 유저가 존재하고 그 유저의 비밀번호가 입력된 비밀번호와 일치하면
-        if(userEntity != null && userEntity.getPassword().equals(password)){
-            //로그인 성공 시 사용자 정보를 세션에 저장
+        // 👉 암호화된 비밀번호 비교
+        if (userEntity != null && passwordEncoder.matches(password, userEntity.getPassword())) {
             session.setAttribute("loginUser", userEntity);
 
-            //로그인 한 유저가 관리자라면
-            if(userEntity.getRole() == UserEntity.Role.ADMIN){
+            if (userEntity.getRole() == UserEntity.Role.ADMIN) {
                 return "redirect:/admin/dashboard";
-
-            //로그인 한 유저가 판매자라면
-            }else if(userEntity.getRole() == UserEntity.Role.SELLER){
+            } else if (userEntity.getRole() == UserEntity.Role.SELLER) {
                 return "redirect:/seller/dashboard";
-
-            //로그인 한 유저가 구매자라면
-            }else{
-                List<CartItem> sessionCartItems = (List<CartItem>)  session.getAttribute("cartItems");
-                if(sessionCartItems != null){
+            } else {
+                List<CartItem> sessionCartItems = (List<CartItem>) session.getAttribute("cartItems");
+                if (sessionCartItems != null) {
                     cartService.mergeCart(userEntity, sessionCartItems);
                     session.removeAttribute("cartItems");
                 }
+
+                System.out.println("입력된 username: " + username);
+                System.out.println("입력된 password: " + password);
+                System.out.println("DB에서 가져온 userEntity: " + userEntity);
+                System.out.println("패스워드 매치 결과: " + passwordEncoder.matches(password, userEntity.getPassword()));
                 return "redirect:/products/productsList";
             }
-        }else{
+        } else {
             model.addAttribute("error", "아이디 혹은 비밀번호가 일치하지 않습니다.");
+
+            System.out.println("입력된 username: " + username);
+            System.out.println("입력된 password: " + password);
+            System.out.println("DB에서 가져온 userEntity: " + userEntity);
+            System.out.println("패스워드 매치 결과: " + passwordEncoder.matches(password, userEntity.getPassword()));
+
             return "login";
         }
     }
+
 
     @GetMapping("/dashboard")
     public String moveDashboard(HttpSession session){
@@ -130,4 +139,30 @@ public class UserController {
         return "redirect:/";
     }
 
+    //정보 수정 ///////////////////////////////////////////////////////
+    @GetMapping("/edit")
+    public String showEditForm(HttpSession session, Model model){
+        UserEntity userEntity = (UserEntity) session.getAttribute("loginUser");
+
+        if (userEntity == null) {
+            return "redirect:/user/login"; // 로그인 안 된 경우 로그인 페이지로 이동
+        }
+
+        model.addAttribute("user", userEntity);
+        return "customer/edit";
+    }
+
+    @PostMapping("/edit")
+    public String updateUser(@ModelAttribute UserUpdateDto dto, HttpSession session, RedirectAttributes redirectAttributes){
+        UserEntity userEntity = (UserEntity) session.getAttribute("loginUser");
+
+        try{
+            userService.updateUser(userEntity, dto);
+            redirectAttributes.addFlashAttribute("message", "회원정보가 수정되었습니다.");
+            return "redirect:/user/dashboard";
+        }catch (IllegalArgumentException e){
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/user/edit";
+        }
+    }
 }
