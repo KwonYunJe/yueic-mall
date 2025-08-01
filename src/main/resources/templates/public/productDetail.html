@@ -79,16 +79,49 @@
   <div class="product-price" th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')} + '원'">0원</div>
   <div class="seller-name" th:text="'판매자: ' + ${product.seller.username}">판매자</div>
 
-  <!-- 장바구니 폼 -->
-  <div th:if="${session.loginUser != null and session.loginUser.role == 'BUYER'}">
-  <form th:action="@{'/customer/cart/add/' + ${product.id}}" method="post" class="cart-form">
-    <label for="quantity">수량:</label>
-    <input type="number" name="quantity" id="quantity" value="1" min="1"/>
-    <button type="submit">장바구니에 담기</button>
-  </form>
+  <!-- ✅ 장바구니 폼 -->
+  <div th:if="${session.loginUser != null and session.loginUser.role.name() == 'CUSTOMER'}">
+    <form th:action="@{'/customer/cart/add/' + ${product.id}}" method="post" class="cart-form">
+      <label for="quantity">수량:</label>
+      <input type="number" name="quantity" id="quantity" value="1" min="1"/>
+      <button type="submit">장바구니에 담기</button>
+    </form>
   </div>
 
-  <a href="/products/productsList" class="back-link">← 목록으로 돌아가기</a>
+  <!-- 로그인하지 않은 경우 -->
+  <div th:if="${session.loginUser == null}">
+    <p>장바구니에 담기 위해 <a th:href='@{/user/login}'>로그인</a> 해주세요.</p>
+  </div>
+
+  <!-- 구매자 외 역할 -->
+  <div th:if="${session.loginUser != null and session.loginUser.role.name() != 'CUSTOMER'}">
+    <p>구매자만 장바구니 기능을 사용할 수 있습니다.</p>
+  </div>
+
+  <!-- 리뷰 작성 -->
+  <div th:if="${session.loginUser != null and session.loginUser.role.name() == 'CUSTOMER'}">
+    <form th:action="@{/reviews/write}" method="post" class="review-form">
+      <input type="hidden" name="productId" th:value="${product.id}" />
+      <textarea name="content" placeholder="리뷰를 입력하세요" required></textarea>
+      <label>평점:
+        <input type="number" name="rating" min="1" max="5" value="5" required />
+      </label>
+      <button type="submit">리뷰 작성</button>
+    </form>
+  </div>
+
+  <!-- 리뷰 리스트 -->
+  <div class="review-list">
+    <div th:if="${#lists.isEmpty(reviews)}">
+      <p>등록된 리뷰가 없습니다.</p>
+    </div>
+    <div th:each="review : ${reviews}" class="review-item">
+      <strong th:text="${review.user.nickname}">닉네임</strong>
+      <span th:text="'(' + ${review.rating} + '점)'">평점</span>
+      <p th:text="${review.content}">리뷰 내용</p>
+      <small th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</small>
+    </div>
+  </div>
 </div>
 </body>
 </html>

@@ -1,9 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.Service.ProductService;
-import com.example.demo.entity.ProductEntity;
-import com.example.demo.entity.UserEntity;
+import com.example.demo.entity.Product;
+import com.example.demo.entity.Review;
 import com.example.demo.repository.ProductRepository;
+import com.example.demo.repository.ReviewRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,16 +20,18 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final ReviewRepository reviewRepository;
 
     //생성자
-    public ProductController(ProductService productService, ProductRepository productRepository) {
+    public ProductController(ProductService productService, ProductRepository productRepository, ReviewRepository reviewRepository) {
         this.productService = productService;
+        this.reviewRepository = reviewRepository;
     }
 
     //상품 목록 불러오기
     @GetMapping("/productsList")
     public String showAllProducts(Model model, HttpSession session){
-        List<ProductEntity> productsList = productService.findAll();
+        List<Product> productsList = productService.findAll();
         model.addAttribute("products", productsList);
         return "public/productList";
     }
@@ -36,12 +39,14 @@ public class ProductController {
     //상품 상세 페이지
     @GetMapping("/product/{id}")
     public String showProductDetail(@PathVariable Long id, Model model){
-        ProductEntity product = productService.findById(id);
+        Product product = productService.findById(id);
         if(product == null){
             model.addAttribute("found", "not found");
             return "public/productNotFound";
         }else{
+            List<Review> reviews = reviewRepository.findByProductIdWithUser(id);
             model.addAttribute("product", product);
+            model.addAttribute("reviews", reviews);
             return "public/productDetail";
         }
     }
@@ -52,7 +57,7 @@ public class ProductController {
                                      @RequestParam(required = false, defaultValue = "latest") String sort,
                                      @RequestParam(required = false) Long sellerId,
                                      Model model){
-        List<ProductEntity> products = productService.search(query, sort, sellerId);
+        List<Product> products = productService.search(query, sort, sellerId);
         model.addAttribute("products", products);
         model.addAttribute("query", query);
         model.addAttribute("sort", sort);

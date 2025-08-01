@@ -7,17 +7,17 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class CartItemEntity {
+public class CartItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    private  UserEntity user;
+    private User user;
 
     @ManyToOne
-    private ProductEntity product;
+    private Product product;
 
     private int quantity;
 

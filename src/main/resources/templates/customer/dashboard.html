@@ -3,13 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <title>구매자 대시보드</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 50px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 40px;
+    }
+
+    .dashboard-link {
+      display: inline-block;
+      margin: 10px 15px;
+      padding: 12px 24px;
+      background-color: #3498db;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: background-color 0.2s ease;
+    }
+
+    .dashboard-link:hover {
+      background-color: #2980b9;
+    }
+
+    .dashboard-link::before {
+      margin-right: 8px;
+    }
+  </style>
 </head>
 <body>
-<h1>구매자 대시보드</h1>
-<p>여기에서 장바구니, 주문 내역 등을 관리할 수 있습니다.</p>
+<div class="container">
+  <h1>구매자 대시보드</h1>
+  <p>여기에서 장바구니, 개인정보 등을 관리할 수 있습니다.</p>
 
-<a href="/user/edit">🛒 개인정보 수정</a>
-<br>
-<a href="/customer/cart">🛒 장바구니 보기</a>
+  <a href="/user/edit" class="dashboard-link">📝 개인정보 수정</a>
+  <a href="/customer/cart" class="dashboard-link">🛒 장바구니 보기</a>
+</div>
 </body>
 </html>

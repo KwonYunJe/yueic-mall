@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @NoArgsConstructor
-public class ProductEntity {
+public class Product {
 
     //기본키, IDENTITY 전략 : DB가 자동으로 증가시키는 방식
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +33,7 @@ public class ProductEntity {
     @ManyToOne
     //DB의 외래키 이름을 seller_id로 지정 (ProductEntity라는 테이블에 seller_id라는 외래키 컬럼이 생김
     @JoinColumn(name = "seller_id")
-    private UserEntity seller;
+    private User seller;
 
     //상품 등록 일시
     @CreatedDate

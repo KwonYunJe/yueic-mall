@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.Service.ProductService;
-import com.example.demo.entity.ProductEntity;
-import com.example.demo.entity.UserEntity;
+import com.example.demo.entity.Product;
+import com.example.demo.entity.User;
 import com.example.demo.repository.ProductRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -25,9 +25,9 @@ public class SellerController {
     //판매자 로그인 후 판매자 대시보드로 이동
     @GetMapping("/dashboard")
     public String showDashboard(HttpSession httpSession, Model model){
-        UserEntity loginUser = (UserEntity) httpSession.getAttribute("loginUser");
+        User loginUser = (User) httpSession.getAttribute("loginUser");
 
-        if(loginUser == null || loginUser.getRole() != UserEntity.Role.SELLER){
+        if(loginUser == null || loginUser.getRole() != User.Role.SELLER){
             return "redirect:/";
         }
 
@@ -39,20 +39,20 @@ public class SellerController {
     //상품 등록 폼
     @GetMapping("/product/create")
     public String showCreateProductFor(Model model){
-        model.addAttribute("/product", new ProductEntity());
+        model.addAttribute("/product", new Product());
         return "seller/createProduct";
     }
 
     //상품 등록 실행
     @PostMapping("/product/create")
-    public String createProduct(@ModelAttribute ProductEntity productEntity, HttpSession httpSession){
-        UserEntity seller = (UserEntity) httpSession.getAttribute("loginUser");
-        if(seller == null || seller.getRole() != UserEntity.Role.SELLER){
+    public String createProduct(@ModelAttribute Product product, HttpSession httpSession){
+        User seller = (User) httpSession.getAttribute("loginUser");
+        if(seller == null || seller.getRole() != User.Role.SELLER){
             return "redirect:/";
         }
 
-        productEntity.setSeller(seller);
-        productService.save(productEntity);
+        product.setSeller(seller);
+        productService.save(product);
 
         return "redirect:/seller/dashboard";
     }
@@ -60,13 +60,13 @@ public class SellerController {
     //판매자 본인이 올린 상품 목록
     @GetMapping("product/list")
     public String showsProductList(HttpSession httpSession, Model model){
-        UserEntity seller = (UserEntity) httpSession.getAttribute("loginUser");
+        User seller = (User) httpSession.getAttribute("loginUser");
 
-        if(seller == null || seller.getRole() != UserEntity.Role.SELLER){
+        if(seller == null || seller.getRole() != User.Role.SELLER){
             return "redirect:/";
         }
 
-        List<ProductEntity> products = productService.findBySellerId(seller.getId());
+        List<Product> products = productService.findBySellerId(seller.getId());
         model.addAttribute("products", products);
 
         return  "seller/productList";
@@ -75,13 +75,13 @@ public class SellerController {
     //판매중인 상품 수정 폼으로 이동
     @GetMapping("/product/edit/{id}")
     public String showEditProductForm(@PathVariable Long id, HttpSession httpSession, Model model){
-        UserEntity seller = (UserEntity) httpSession.getAttribute("loginUser");
-        if(seller == null || seller.getRole() != UserEntity.Role.SELLER){
+        User seller = (User) httpSession.getAttribute("loginUser");
+        if(seller == null || seller.getRole() != User.Role.SELLER){
             return "redirect:/";
         }
 
         //판매 물품 정보 가져오기
-        ProductEntity product = productService.findById(id);
+        Product product = productService.findById(id);
 
         //판매 물품의 정보가 없거나 판매자의 ID가 일치하지 않는 경우(판매자의 물건이 아닐 경우)
         if(product == null || !product.getSeller().getId().equals(seller.getId())){
@@ -96,15 +96,15 @@ public class SellerController {
     //폼에 입력된 수정사항을 전송
     @PostMapping("/product/edit/{id}")
     public String editProduct(@PathVariable Long id,
-                              @ModelAttribute ProductEntity formProduct,
+                              @ModelAttribute Product formProduct,
                               HttpSession httpSession){
-        UserEntity seller = (UserEntity) httpSession.getAttribute("loginUser");
+        User seller = (User) httpSession.getAttribute("loginUser");
 
-        if(seller == null || seller.getRole() != UserEntity.Role.SELLER){
+        if(seller == null || seller.getRole() != User.Role.SELLER){
             return "redirect:/";
         }
 
-        ProductEntity product = productService.findById(id);
+        Product product = productService.findById(id);
 
         if(product == null || !product.getSeller().getId().equals(seller.getId())){
             System.out.println("판매 상품이 없거나 일치하지 않는 판매자.");

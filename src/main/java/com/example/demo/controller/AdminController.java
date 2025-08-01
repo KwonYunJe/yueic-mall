@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.Service.UserService;
-import com.example.demo.entity.UserEntity;
+import com.example.demo.entity.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,9 +20,9 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public String showDashboard(HttpSession httpSession, Model model){
-        UserEntity loginUser = (UserEntity) httpSession.getAttribute("loginUser");
+        User loginUser = (User) httpSession.getAttribute("loginUser");
 
-        if(loginUser == null || loginUser.getRole() != UserEntity.Role.ADMIN){
+        if(loginUser == null || loginUser.getRole() != User.Role.ADMIN){
             return  "redirect:/";
         }
 
@@ -30,7 +30,7 @@ public class AdminController {
         return "admin/dashboard";
     }
 
-    //모든 유저 비밀번호 암호화
+    //모든 유저 비밀번호 암호화(임시)
     @GetMapping("/encode-passwords")
     public String encodePasswords() {
         userService.encodeAllPasswords();

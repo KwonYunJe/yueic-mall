@@ -1,14 +1,99 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>판매자 계정 생성</title></head>
+<head>
+  <meta charset="UTF-8">
+  <title>판매자 계정 생성</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      background-color: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 24px;
+      font-size: 22px;
+      color: #343a40;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 12px;
+      text-align: left;
+      color: #495057;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 4px;
+      margin-bottom: 16px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: #198754;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #157347;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #0d6efd;
+      font-size: 14px;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
 <body>
-<h1>판매자 계정 생성 (관리자 전용)</h1>
-<form th:action="@{/admin/seller/create}" method="post">
-  <label>아이디: <input type="text" name="username"/></label><br/>
-  <label>비밀번호: <input type="password" name="password"/></label><br/>
-  <label>이메일: <input type="email" name="email"/></label><br/>
-  <button type="submit">생성</button>
-</form>
-<a th:href="@{/}">홈으로</a>
+<div class="container">
+  <h1>판매자 계정 생성 (관리자 전용)</h1>
+  <form th:action="@{/admin/seller/create}" method="post">
+    <label>아이디:
+      <input type="text" name="username" required />
+    </label>
+    <label>비밀번호:
+      <input type="password" name="password" required />
+    </label>
+    <label>이메일:
+      <input type="email" name="email" required />
+    </label>
+    <label>닉네임:
+      <input type="text" name="nickname" required />
+    </label>
+    <button type="submit">계정 생성</button>
+  </form>
+  <a th:href="@{/}">← 홈으로 돌아가기</a>
+</div>
 </body>
 </html>

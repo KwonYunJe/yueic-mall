@@ -1,15 +1,15 @@
 package com.example.demo.repository;
 
-import com.example.demo.entity.CartItemEntity;
-import com.example.demo.entity.ProductEntity;
-import com.example.demo.entity.UserEntity;
+import com.example.demo.entity.CartItem;
+import com.example.demo.entity.Product;
+import com.example.demo.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface CartItemRepository extends JpaRepository<CartItemEntity, Long> {
-    List<CartItemEntity> findByUser(UserEntity user);
-    void deleteByUser(UserEntity user);
-    Optional<CartItemEntity> findByUserAndProduct(UserEntity user, ProductEntity product);
+public interface CartItemRepository extends JpaRepository<CartItem, Long> {
+    List<CartItem> findByUser(User user);
+    void deleteByUser(User user);
+    Optional<CartItem> findByUserAndProduct(User user, Product product);
 }

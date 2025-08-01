@@ -1,41 +1,165 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta charset="UTF-8">
   <title>장바구니</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f4f8;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 32px;
+      color: #333;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 0;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .thumbnail {
+      width: 100px;
+      height: 100px;
+      background-color: #f1f1f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 14px;
+      border-radius: 8px;
+      margin-right: 20px;
+      flex-shrink: 0;
+    }
+
+    .details {
+      flex-grow: 1;
+    }
+
+    .details h3 {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+      color: #222;
+    }
+
+    .details p {
+      margin: 4px 0;
+      color: #555;
+      font-size: 15px;
+    }
+
+    .delete-btn {
+      background-color: #f44336;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s ease;
+    }
+
+    .delete-btn:hover {
+      background-color: #d32f2f;
+    }
+
+    .summary {
+      margin-top: 30px;
+      text-align: right;
+      font-size: 18px;
+      color: #111;
+      font-weight: bold;
+    }
+
+    .clear-btn {
+      display: block;
+      margin: 30px auto 0;
+      padding: 12px 28px;
+      background-color: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background-color 0.2s ease;
+    }
+
+    .clear-btn:hover {
+      background-color: #5a6268;
+    }
+
+    .home-link {
+      display: block;
+      text-align: center;
+      margin-top: 30px;
+      text-decoration: none;
+      color: #007bff;
+      font-size: 15px;
+    }
+
+    .home-link:hover {
+      text-decoration: underline;
+    }
+
+    .empty {
+      text-align: center;
+      font-size: 16px;
+      color: #999;
+      margin-top: 40px;
+    }
+  </style>
 </head>
 <body>
-<h2>장바구니</h2>
+<div class="container">
+  <h2>장바구니</h2>
 
-<table border="1">
-  <thead>
-  <tr>
-    <th>상품명</th>
-    <th>수량</th>
-    <th>가격</th>
-    <th>합계</th>
-    <th>삭제</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="item : ${cartItems}">
-    <td th:text="${item.product.name}">상품명</td>
-    <td th:text="${item.quantity}">수량</td>
-    <td th:text="${item.product.price}">가격</td>
-    <td th:text="${item.quantity * item.product.price}">합계</td>
-    <td>
+  <div th:if="${cartItems != null and !cartItems.isEmpty()}">
+    <div th:each="item : ${cartItems}" class="cart-item">
+      <div class="thumbnail">썸네일</div>
+
+      <div class="details">
+        <h3 th:text="${item.product.name}">상품명</h3>
+        <p>수량: <span th:text="${item.quantity}">1</span></p>
+        <p>가격: ₩<span th:text="${item.product.price}">0</span></p>
+        <p>합계: ₩<span th:text="${item.quantity * item.product.price}">0</span></p>
+      </div>
+
       <form th:action="@{'/customer/cart/delete/' + ${item.product.id}}" method="post">
-        <button type="submit">삭제</button>
+        <button type="submit" class="delete-btn">삭제</button>
       </form>
-    </td>
-  </tr>
-  </tbody>
-</table>
+    </div>
 
-<form th:action="@{/customer/cart/clear}" method="post">
-  <button type="submit">장바구니 비우기</button>
-</form>
+    <div class="summary">
+      총 합계: ₩<span th:text="${#numbers.formatInteger(totalPrice, 3)}">0</span>
+    </div>
 
-<a th:href="@{/}">메인으로</a>
+    <form th:action="@{/customer/cart/clear}" method="post">
+      <button type="submit" class="clear-btn">장바구니 비우기</button>
+    </form>
+  </div>
 
+  <div th:if="${cartItems == null or cartItems.isEmpty()}" class="empty">
+    장바구니가 비어 있습니다.
+  </div>
+
+  <a th:href="@{/}" class="home-link">← 메인으로 돌아가기</a>
+</div>
 </body>
 </html>

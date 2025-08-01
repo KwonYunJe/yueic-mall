@@ -1,15 +1,100 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta charset="UTF-8">
   <title>로그인</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+
+    .login-container {
+      max-width: 400px;
+      margin: 80px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-bottom: 15px;
+      color: #555;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-top: 5px;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .register-link a {
+      color: #27ae60;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-<h1>로그인</h1>
-<form th:action="@{/user/login}" method="post">
-  <label>아이디: <input type="text" name="username"/></label><br/>
-  <label>비밀번호: <input type="password" name="password"/></label><br/>
-  <button type="submit">로그인</button>
-  <a th:href="@{/user/register}">회원가입</a>
-</form>
+
+<div class="login-container">
+  <h1>로그인</h1>
+  <form th:action="@{/user/login}" method="post">
+    <label>아이디:
+      <input type="text" name="username" required/>
+    </label>
+    <label>비밀번호:
+      <input type="password" name="password" required/>
+    </label>
+    <button type="submit">로그인</button>
+  </form>
+  <div class="register-link">
+    <a th:href="@{/user/register}">회원가입</a>
+  </div>
+</div>
+
 </body>
 </html>

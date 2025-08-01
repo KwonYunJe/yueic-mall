@@ -1,7 +1,6 @@
 package com.example.demo.Service;
 
-import com.example.demo.entity.ProductEntity;
-import com.example.demo.entity.UserEntity;
+import com.example.demo.entity.Product;
 import com.example.demo.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,27 +16,27 @@ public class ProductService {
     }
 
     //모든 상품 가져오기
-    public List<ProductEntity> findAll(){
+    public List<Product> findAll(){
         return productRepository.findAll();
     }
 
     //상품 저장
-    public void save(ProductEntity product){
+    public void save(Product product){
         productRepository.save(product);
     }
 
     //판매자 상품 가져오기
-    public List<ProductEntity> findBySellerId(Long sellerId){
+    public List<Product> findBySellerId(Long sellerId){
         return productRepository.findBySellerId(sellerId);
     }
 
     //판매 물품 ID로 검색하기
-    public ProductEntity findById(Long id) {
+    public Product findById(Long id) {
         return productRepository.findById(id).orElse(null);
     }
 
     //검색, 정렬
-    public List<ProductEntity> search(String query, String sort, Long sellerId) {
+    public List<Product> search(String query, String sort, Long sellerId) {
         if (sellerId != null) {
             switch (sort) {
                 case "priceAsc":

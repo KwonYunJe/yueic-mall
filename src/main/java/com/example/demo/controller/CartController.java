@@ -1,15 +1,13 @@
 package com.example.demo.controller;
 
 import com.example.demo.Service.CartService;
-import com.example.demo.entity.UserEntity;
-import com.example.demo.repository.CartItemRepository;
-import com.example.demo.repository.ProductRepository;
+import com.example.demo.entity.CartItem;
+import com.example.demo.entity.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -25,9 +23,15 @@ public class CartController {
     // 장바구니 조회
     @GetMapping
     public String viewCart(HttpSession httpSession, Model model) {
-        UserEntity user = (UserEntity) httpSession.getAttribute("loginUser");
-        List<?> cartItems = cartService.getCartItems(user, httpSession);
+        User user = (User) httpSession.getAttribute("loginUser");
+        List<CartItem> cartItems = (List<CartItem>) cartService.getCartItems(user, httpSession);
+
+        int totalPrice = cartItems.stream()
+                .mapToInt(item -> item.getQuantity() * item.getProduct().getPrice())
+                .sum();
+
         model.addAttribute("cartItems", cartItems);
+        model.addAttribute("totalPrice", totalPrice);
         return "customer/cart";
     }
 
@@ -36,9 +40,9 @@ public class CartController {
     public String addToCart(@PathVariable Long productId,
                             @RequestParam(defaultValue = "1") int quantity,
                             HttpSession httpSession) {
-        UserEntity user = (UserEntity) httpSession.getAttribute("loginUser");
+        User user = (User) httpSession.getAttribute("loginUser");
 
-        if(!"CUSTOMER".equals(user.getRole())){
+        if (user.getRole() != User.Role.CUSTOMER) {
             return "redirect:/accessDenied";
         }
 
@@ -49,7 +53,7 @@ public class CartController {
     // 카트 비우기
     @PostMapping("/clear")
     public String clearCart(HttpSession httpSession) {
-        UserEntity user = (UserEntity) httpSession.getAttribute("loginUser");
+        User user = (User) httpSession.getAttribute("loginUser");
         cartService.clearCart(user, httpSession);
         return "redirect:/customer/cart";
     }

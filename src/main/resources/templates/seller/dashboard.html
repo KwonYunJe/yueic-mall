@@ -1,20 +1,99 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>판매자 대시보드</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 80px auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 30px;
+        }
+
+        li {
+            margin-bottom: 15px;
+        }
+
+        a {
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 6px;
+            margin: 5px;
+            display: inline-block;
+        }
+
+        a:hover {
+            background-color: #2980b9;
+        }
+
+        .logout-link {
+            background-color: transparent;
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+        }
+
+        .logout-link:hover {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .home-link {
+            background-color: transparent;
+            border: 1px solid #3498db;
+            color: #3498db;
+        }
+
+        .home-link:hover {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .link-group {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-<h1>판매자 [[${sellerName}]]님 환영합니다</h1>
 
-<ul>
-    <li>
-        <a th:href="@{/seller/product/create}">상품 등록</a>
-        <a th:href="@{/seller/product/list}">내 상품 목록 보기</a>
+<div class="container">
+    <h1>판매자 <span th:text="${sellerName}">판매자명</span>님 환영합니다</h1>
 
-    </li>
-    <!-- 필요시 상품 목록, 주문 관리 등 추가 -->
-</ul>
+    <ul>
+        <li>
+            <a th:href="@{/seller/product/create}">상품 등록</a>
+            <a th:href="@{/seller/product/list}">내 상품 목록 보기</a>
+        </li>
+    </ul>
 
-<a th:href="@{/user/logout}">로그아웃</a>
+    <div class="link-group">
+        <a th:href="@{/}" class="home-link">← 홈으로</a>
+        <a th:href="@{/user/logout}" class="logout-link">로그아웃</a>
+    </div>
+</div>
+
 </body>
 </html>

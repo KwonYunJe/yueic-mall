@@ -1,17 +1,96 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta charset="UTF-8">
   <title>상품 수정</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #2c3e50;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #34495e;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: #219150;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #3498db;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-<h1>상품 수정</h1>
+<div class="container">
+  <h1>상품 수정</h1>
 
-<form th:action="@{|/seller/product/edit/${product.id}|}" th:object="${product}" method="post">
-  <label>상품명: <input type="text" th:field="*{name}" /></label><br/>
-  <label>가격: <input type="number" th:field="*{price}" /></label><br/>
-  <button type="submit">수정 완료</button>
-</form>
+  <form th:action="@{|/seller/product/edit/${product.id}|}" th:object="${product}" method="post">
+    <label>상품명:
+      <input type="text" th:field="*{name}" placeholder="상품명을 입력하세요" />
+    </label>
 
-<a th:href="@{/seller/product/list}">목록으로</a>
+    <label>가격:
+      <input type="number" th:field="*{price}" placeholder="가격을 입력하세요" />
+    </label>
+
+    <button type="submit">수정 완료</button>
+  </form>
+
+  <a th:href="@{/seller/product/list}" class="back-link">← 목록으로</a>
+</div>
 </body>
 </html>

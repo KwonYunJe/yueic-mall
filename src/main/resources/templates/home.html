@@ -1,27 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>홈</title>
+  <meta http-equiv="refresh" content="0; URL='@{/products}'" />
+  <title>Redirecting...</title>
 </head>
 <body>
-<div  th:if="${username} != null">
-  <h1>
-    [[${username}]] 님 환영합니다!
-    <br>
-    <a th:href="@{/user/logout}">로그아웃</a>
-    <br>
-    <a th:href="@{/user/dashboard}">대시보드 이동</a>
-    <br>
-    <a th:href="@{/products/productsList}">상품 보러 가기</a>
-  </h1>
-</div>
-<div  th:if="${username} == null">
-  <h1>
-    비회원 상태입니다.
-    <a th:href="@{/user/login}">로그인</a>
-  </h1>
-</div>
-
-
+<p>상품 목록으로 이동 중입니다...</p>
 </body>
 </html>

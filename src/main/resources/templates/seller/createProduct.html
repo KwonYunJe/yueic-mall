@@ -1,17 +1,97 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>상품 등록</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .form-container {
+            max-width: 500px;
+            margin: 80px auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #444;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-top: 5px;
+        }
+
+        button {
+            padding: 12px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #219150;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            text-decoration: none;
+            color: #3498db;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-<h1>상품 등록</h1>
 
-<form th:action="@{/seller/product/create}" method="post">
-    <label>상품명: <input type="text" name="name" /></label><br/>
-    <label>가격: <input type="number" name="price" /></label><br/>
-    <button type="submit">등록</button>
-</form>
+<div class="form-container">
+    <h1>상품 등록</h1>
 
-<a th:href="@{/seller/dashboard}">대시보드로 돌아가기</a>
+    <form th:action="@{/seller/product/create}" method="post">
+        <label>상품명:
+            <input type="text" name="name" required/>
+        </label>
+        <label>가격:
+            <input type="number" name="price" min="0" required/>
+        </label>
+        <button type="submit">등록</button>
+    </form>
+
+    <a th:href="@{/seller/dashboard}" class="back-link">← 대시보드로 돌아가기</a>
+</div>
+
 </body>
 </html>

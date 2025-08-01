@@ -9,7 +9,7 @@ import lombok.Setter;
 @Entity //해당 어노테이션이 있으면 JPA가 테이블로 매핑함
 @Getter @Setter
 @NoArgsConstructor
-public class UserEntity {
+public class User {
 
     //유저의 역할 필드, 열거형(enum)으로 정의 (관리자, 판매자, 소비자)
     public enum Role{

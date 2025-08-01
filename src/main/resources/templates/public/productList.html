@@ -1,46 +1,162 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta charset="UTF-8">
   <title>상품 목록</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .dashboard-link, .login-link, .logout-link {
+      text-decoration: none;
+      background-color: #3498db;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .dashboard-link:hover, .login-link:hover, .logout-link:hover {
+      background-color: #2980b9;
+    }
+
+    .search-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 30px;
+    }
+
+    .search-container form {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .search-container input[type="text"] {
+      width: 250px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .search-container select {
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .search-container button {
+      padding: 8px 15px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .search-container button:hover {
+      background-color: #219150;
+    }
+
+    .product-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .product-card img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .product-name {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      margin: 5px 0;
+      text-decoration: none;
+    }
+
+    .product-price {
+      color: #27ae60;
+      font-size: 15px;
+      margin-bottom: 5px;
+    }
+
+    .seller-nickname {
+      font-size: 12px;
+      color: #7f8c8d;
+    }
+  </style>
 </head>
 <body>
-<h2>전체 상품 목록</h2>
-<!-- 구매자 대시보드 이동 링크 -->
-<a href="/customer/dashboard" class="dashboard-link">마이 페이지</a>
-<br>
-<!-- 검색-->
-<form th:action="@{/products/search}" method="get">
-  <input type="text" name="query" placeholder="상품명 검색" th:value="${query}">
-  <select name="sort">
-    <option value="latest" th:selected="${sort == 'latest'}">최신순</option>
-    <option value="oldest" th:selected="${sort == 'oldest'}">오래된순</option>
-    <option value="priceAsc" th:selected="${sort == 'priceAsc'}">낮은 가격순</option>
-    <option value="priceDesc" th:selected="${sort == 'priceDesc'}">높은 가격순</option>
-  </select>
-  <button type="submit">검색</button>
-</form>
-<br>
-<table border="1">
-  <thead>
-  <tr>
-    <th>썸네일</th>
-    <th>상품명</th>
-    <th>가격</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="product : ${products}">
-    <td>
-      <img th:src="${product.thumbnailUrl}" alt="썸네일" width="60" height="60">
-    </td>
-    <td>
-      <a th:href="@{'/products/product/' + ${product.id}}"
-         th:text="${product.name}">상품명</a>
-    </td>
-    <td th:text="${product.price}">가격</td>
-  </tr>
-  </tbody>
-</table>
+
+<div class="header">
+  <h2>전체 상품 목록</h2>
+  <div class="header-buttons">
+    <!-- 로그인 상태일 경우 -->
+    <a th:if="${session.loginUser != null}" href="/customer/dashboard" class="dashboard-link">마이 페이지</a>
+    <a th:if="${session.loginUser != null}" href="/user/logout" class="logout-link">로그아웃</a>
+
+    <!-- 비로그인 상태일 경우 -->
+    <a th:if="${session.loginUser == null}" href="/user/login" class="login-link">로그인</a>
+  </div>
+</div>
+
+<div class="search-container">
+  <form th:action="@{/products/search}" method="get">
+    <input type="text" name="query" placeholder="상품명 검색" th:value="${query}">
+    <select name="sort">
+      <option value="latest" th:selected="${sort == 'latest'}">최신순</option>
+      <option value="oldest" th:selected="${sort == 'oldest'}">오래된순</option>
+      <option value="priceAsc" th:selected="${sort == 'priceAsc'}">낮은 가격순</option>
+      <option value="priceDesc" th:selected="${sort == 'priceDesc'}">높은 가격순</option>
+    </select>
+    <button type="submit">검색</button>
+  </form>
+</div>
+
+<div class="product-list">
+  <div th:each="product : ${products}" class="product-card">
+    <img th:src="${product.thumbnailUrl}" alt="썸네일"/>
+    <a th:href="@{'/products/product/' + ${product.id}}" class="product-name"
+       th:text="${product.name}">상품명</a>
+    <div class="product-price" th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')} + '원'">0원</div>
+    <div class="seller-nickname" th:text="'판매자: ' + ${product.seller.nickname}">판매자명</div>
+  </div>
+</div>
 
 </body>
 </html>
