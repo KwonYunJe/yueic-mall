@@ -6,6 +6,9 @@ import com.example.demo.entity.Review;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.ReviewRepository;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,17 +41,20 @@ public class ProductController {
 
     //상품 상세 페이지
     @GetMapping("/product/{id}")
-    public String showProductDetail(@PathVariable Long id, Model model){
+    public String showProductDetail(@PathVariable Long id, Model model,
+                                    @PageableDefault(size = 10) Pageable pageable) {
         Product product = productService.findById(id);
-        if(product == null){
+        if (product == null) {
             model.addAttribute("found", "not found");
             return "public/productNotFound";
-        }else{
-            List<Review> reviews = reviewRepository.findByProductIdWithUser(id);
-            model.addAttribute("product", product);
-            model.addAttribute("reviews", reviews);
-            return "public/productDetail";
         }
+        Page<Review> page = reviewRepository.findByProduct_IdOrderByCreatedAtDesc(id, pageable);
+        model.addAttribute("product", product);
+        model.addAttribute("reviews", page.getContent());
+        model.addAttribute("reviewPage", page);
+        model.addAttribute("avgRating", reviewRepository.findAvgRatingByProductId(id));
+        model.addAttribute("reviewCount", reviewRepository.countByProduct_Id(id));
+        return "public/productDetail";
     }
 
     //검색, 정렬

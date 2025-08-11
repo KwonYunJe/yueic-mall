@@ -1,18 +1,13 @@
 package com.example.demo.dto.review;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import java.time.LocalDateTime;
 
-@Data
-public class ReviewDto {
-    private Long productId;
-
-    @NotBlank
-    private String content;
-
-    @Min(1)
-    @Max(5)
-    private int rating;
-}
+public record ReviewDto(
+        Long reviewId,
+        Long productId,
+        Integer rating,
+        String content,
+        LocalDateTime createdAt,
+        Long userId,
+        String nickname  // User의 표시용 필드(프로젝트에 맞게 변경)
+) {}

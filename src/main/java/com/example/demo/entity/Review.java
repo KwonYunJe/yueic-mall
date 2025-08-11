@@ -1,35 +1,43 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
-@Setter
+@Table(name = "review")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Review {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //유저 특정
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
-
-    //상품 특정
-    @ManyToOne(fetch = FetchType.LAZY)
+    // FK 컬럼명 유지
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    //리뷰 내용
-    @Column(nullable = false, length = 1000)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Min(1) @Max(5)
+    @Column(nullable = false)
+    private Integer rating;
+
+    @Column(length = 1000)
     private String content;
 
-    //평점
-    @Column(nullable = false)
-    private int rating;
-
-    //작성시간 및 수정 시간
+    @CreationTimestamp
+    @Column(name="created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name="updated_at", nullable = false)
     private LocalDateTime updatedAt;
 }

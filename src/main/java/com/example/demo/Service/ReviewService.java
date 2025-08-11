@@ -1,50 +1,37 @@
 package com.example.demo.Service;
 
-import com.example.demo.dto.review.ReviewDto;
-import com.example.demo.dto.review.ReviewResponseDto;
 import com.example.demo.entity.Product;
 import com.example.demo.entity.Review;
 import com.example.demo.entity.User;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.ReviewRepository;
+import com.example.demo.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-@Service
+@Service @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
-    public ReviewService(ReviewRepository reviewRepository, ProductRepository productRepository) {
-        this.reviewRepository = reviewRepository;
-        this.productRepository = productRepository;
-    }
+    @Transactional
+    public Review create(Long productId, Long userId, int rating, String content) {
+        if (reviewRepository.existsByProduct_IdAndUser_Id(productId, userId)) {
+            throw new IllegalStateException("이미 이 상품에 리뷰를 작성했습니다.");
+        }
+        // 추가 쿼리 없이 프록시 참조만 얻고 싶으면 getReferenceById 사용
+        Product product = productRepository.getReferenceById(productId);
+        User user = userRepository.getReferenceById(userId);
 
-    public void createReview(User user, ReviewDto dto) {
-        Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("상품 없음"));
+        Review r = Review.builder()
+                .product(product)
+                .user(user)
+                .rating(rating)
+                .content(content)
+                .build();
 
-        Review review = new Review();
-        review.setUser(user);
-        review.setProduct(product);
-        review.setContent(dto.getContent());
-        review.setRating(dto.getRating());
-        review.setCreatedAt(LocalDateTime.now());
-        review.setUpdatedAt(LocalDateTime.now());
-
-        reviewRepository.save(review);
-    }
-
-    public List<ReviewResponseDto> getReviewsByProductId(Long productId) {
-        List<Review> reviews = reviewRepository.findByProductId(productId);
-        return reviews.stream()
-                .map(r -> new ReviewResponseDto(
-                        r.getUser().getNickname(),
-                        r.getContent(),
-                        r.getRating(),
-                        r.getCreatedAt()))
-                .toList();
+        return reviewRepository.save(r);
     }
 }
