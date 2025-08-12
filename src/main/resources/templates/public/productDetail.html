@@ -120,8 +120,33 @@
       <span th:text="'(' + ${review.rating} + '점)'">평점</span>
       <p th:text="${review.content}">리뷰 내용</p>
       <small th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</small>
+      <div th:if="${session.loginUser != null and review.user.id == session.loginUser.id}">
+        <!-- 수정 폼 -->
+        <form th:action="@{|/reviews/${review.id}/edit|}" method="post" style="margin-top:8px">
+          <input type="hidden" name="productId" th:value="${product.id}">
+          <label>평점</label>
+          <select name="rating" required>
+            <option th:each="i : ${#numbers.sequence(1,5)}"
+                    th:value="${i}" th:text="${i}"
+                    th:selected="${i == review.rating}"></option>
+          </select>
+          <label>내용</label>
+          <textarea name="content" maxlength="1000" th:text="${review.content}" required></textarea>
+          <button type="submit">수정</button>
+        </form>
+        <!-- 삭제 -->
+        <form th:action="@{|/reviews/${review.id}/delete|}" method="post" style="margin-top:6px;"
+              onsubmit="return confirm('정말 삭제할까요?');">
+          <input type="hidden" name="productId" th:value="${product.id}">
+          <button type="submit">삭제</button>
+        </form>
+      </div>
     </div>
+    <!-- 플래시 메시지 -->
+    <div th:if="${msg}" class="alert alert-success" th:text="${msg}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
   </div>
+
 </div>
 </body>
 </html>

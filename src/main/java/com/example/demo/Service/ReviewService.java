@@ -34,4 +34,30 @@ public class ReviewService {
 
         return reviewRepository.save(r);
     }
+
+    @Transactional
+    public Review update(Long reviewId, Long userId, int rating, String content) {
+        if(rating < 1 || rating > 5) throw new IllegalArgumentException("평점은 1~5점이어야 합니다.");
+
+        Review r = reviewRepository.findById(reviewId).orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
+
+        if(!r.getUser().getId().equals(userId)) {
+            throw new SecurityException("작성자만 수정이 가능합니다.");
+        }
+
+        r.setRating(rating);
+        r.setContent(content);
+        return r;
+    }
+
+    @Transactional
+    public void delete(Long reviewId, Long userId) {
+        Review r = reviewRepository.findById(reviewId).orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
+
+        if(!r.getUser().getId().equals(userId)) {
+            throw  new SecurityException("작성자만 삭제가 가능합니다.");
+        }
+        //하드삭제 (소프트 삭제를 원한다면 엔티티에 delete를 만들고 r.setDeleted(true)로 플래그만 변경)
+        reviewRepository.delete(r);
+    }
 }

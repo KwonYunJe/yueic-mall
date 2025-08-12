@@ -23,8 +23,11 @@ public class ReviewController {
     public String submitReview(@ModelAttribute ReviewDto dto, HttpSession session,
                                RedirectAttributes ra) {
         User loginUser = (User) session.getAttribute("loginUser");
+
+        //비 로그인시 로그인 화면으로 이동
         if (loginUser == null) return "redirect:/user/login";
 
+        //리뷰 작성 시도
         try {
             reviewService.create(dto.productId(), loginUser.getId(),
                     dto.rating(), dto.content());
@@ -33,5 +36,51 @@ public class ReviewController {
             ra.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/products/product/" + dto.productId(); // 상세로 복귀
+    }
+
+    @PostMapping("/{id}/edit")
+    public String editReview(@PathVariable Long id,
+                             @RequestParam Integer rating,
+                             @RequestParam String content,
+                             @RequestParam Long productId,
+                             HttpSession session,
+                             RedirectAttributes ra) {
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        //비 로그인시 로그인창으로 이동
+        if(loginUser == null) return "redirect:/user/login";
+
+        //리뷰 수정 시도
+        try{
+            reviewService.update(id, loginUser.getId(), rating, content);
+            ra.addFlashAttribute("msg", "리뷰가 수정되었습니다.");
+        }catch (Exception e){
+            ra.addFlashAttribute("error", e.getMessage());
+        }
+
+        //물건 상세페이지로 이동
+        return "redirect:/products/product/" + productId;
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteReview(@PathVariable Long id,
+                               @RequestParam Long productId,
+                               HttpSession session,
+                               RedirectAttributes ra) {
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        //비 로그인시 로그인 화면으로 이동
+        if(loginUser == null) return "redirect:/user/login";
+
+        //리뷰 삭제 시도
+        try{
+            reviewService.delete(id, loginUser.getId());
+            ra.addFlashAttribute("msg", "리뷰가 삭제되었습니다.");
+        } catch (Exception e){
+            ra.addFlashAttribute("error", e.getMessage());
+        }
+
+        //제품 상세페이지로 이동
+        return "redirect:/products/product/" + productId;
     }
 }
