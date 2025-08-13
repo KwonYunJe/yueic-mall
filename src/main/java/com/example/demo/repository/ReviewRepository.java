@@ -13,9 +13,9 @@ import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    // 페이지로 목록 + 작성자 함께 가져오기 (N+1 방지)
-    @EntityGraph(attributePaths = "user") // user를 즉시 로딩
-    Page<Review> findByProduct_IdOrderByCreatedAtDesc(Long productId, Pageable pageable);
+    //동적 정렬 + 페이징
+    @EntityGraph(attributePaths = "user") // 작성자 N+1 방지
+    Page<Review> findByProduct_Id(Long productId, Pageable pageable);
 
     boolean existsByProduct_IdAndUser_Id(Long productId, Long userId);
 

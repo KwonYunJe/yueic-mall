@@ -7,7 +7,9 @@ import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.ReviewRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,13 +44,25 @@ public class ProductController {
     //상품 상세 페이지
     @GetMapping("/product/{id}")
     public String showProductDetail(@PathVariable Long id, Model model,
-                                    @PageableDefault(size = 10) Pageable pageable) {
+                                    @PageableDefault(size = 10) Pageable pageable,
+                                    @RequestParam(defaultValue = "latest") String sort) {
         Product product = productService.findById(id);
         if (product == null) {
             model.addAttribute("found", "not found");
             return "public/productNotFound";
         }
-        Page<Review> page = reviewRepository.findByProduct_IdOrderByCreatedAtDesc(id, pageable);
+        // ✅ 정렬 스위치
+        Sort sortSpec = switch (sort) {
+            case "ratingDesc" -> Sort.by(Sort.Order.desc("rating"), Sort.Order.desc("createdAt"));
+            case "ratingAsc"  -> Sort.by(Sort.Order.asc("rating"),  Sort.Order.desc("createdAt"));
+            // 기본: 최신순
+            default            -> Sort.by(Sort.Order.desc("createdAt"));
+        };
+
+        Pageable sorted = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortSpec);
+
+        Page<Review> page = reviewRepository.findByProduct_Id(id, sorted);
+
         model.addAttribute("product", product);
         model.addAttribute("reviews", page.getContent());
         model.addAttribute("reviewPage", page);
