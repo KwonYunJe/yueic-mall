@@ -21,6 +21,8 @@ public class ReviewService {
         if (reviewRepository.existsByProduct_IdAndUser_Id(productId, userId)) {
             throw new IllegalStateException("이미 이 상품에 리뷰를 작성했습니다.");
         }
+
+        if(rating<1 || rating>5) throw new IllegalArgumentException("별점은 1~5 사이여야 합니다.");
         // 추가 쿼리 없이 프록시 참조만 얻고 싶으면 getReferenceById 사용
         Product product = productRepository.getReferenceById(productId);
         User user = userRepository.getReferenceById(userId);
@@ -57,7 +59,7 @@ public class ReviewService {
         if(!r.getUser().getId().equals(userId)) {
             throw  new SecurityException("작성자만 삭제가 가능합니다.");
         }
-        //하드삭제 (소프트 삭제를 원한다면 엔티티에 delete를 만들고 r.setDeleted(true)로 플래그만 변경)
+        //소프트 삭제
         reviewRepository.delete(r);
     }
 }

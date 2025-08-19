@@ -3,8 +3,11 @@ package com.example.demo.controller;
 import com.example.demo.Service.ReviewService;
 import com.example.demo.dto.review.ReviewDto;
 import com.example.demo.entity.User;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -20,12 +23,24 @@ public class ReviewController {
     }
 
     @PostMapping("/write")
-    public String submitReview(@ModelAttribute ReviewDto dto, HttpSession session,
+    public String submitReview(@Valid @ModelAttribute ReviewDto dto, HttpSession session, HttpServletRequest request,
+                               BindingResult br,
                                RedirectAttributes ra) {
         User loginUser = (User) session.getAttribute("loginUser");
 
         //비 로그인시 로그인 화면으로 이동
         if (loginUser == null) return "redirect:/user/login";
+
+        //입력값 검증 실패 시 원위치
+        //DTO 검증 실패 시 -> 플래시로 에러메시지를 싣고 -> productId가 있으면 해당 상품 상세로, 없으면 이전페이지로 돌려보냄.
+        if(br.hasErrors()) {
+            ra.addFlashAttribute("errors", "입력값을 확인하세요.");
+            if(dto.productId() != null){
+                return "redirect:/products/product/"+dto.productId();
+            }
+            String back = request.getHeader("Referer");
+            return "redirect:"+(back != null ? back : "/");
+        }
 
         //리뷰 작성 시도
         try {

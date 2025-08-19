@@ -19,11 +19,11 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     boolean existsByProduct_IdAndUser_Id(Long productId, Long userId);
 
-    // 수정/삭제 시 본인 확인용
-    Optional<Review> findByIdAndUser_Id(Long reviewId, Long userId);
-
     @Query("select avg(r.rating) from Review r where r.product.id = :productId")
     Double findAvgRatingByProductId(Long productId);
 
     long countByProduct_Id(Long productId);
+
+    // 수정/삭제 시 본인 확인용
+    Optional<Review> findByIdAndUser_Id(Long reviewId, Long userId);
 }
