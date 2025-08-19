@@ -46,7 +46,7 @@ public class ReviewController {
         try {
             reviewService.create(dto.productId(), loginUser.getId(),
                     dto.rating(), dto.content());
-            ra.addFlashAttribute("msg", "리뷰가 등록되었습니다.");
+            ra.addFlashAttribute("msg", "리뷰가 등록되었습니다!");
         } catch (IllegalStateException e) { // 중복 작성 등
             ra.addFlashAttribute("error", e.getMessage());
         }
