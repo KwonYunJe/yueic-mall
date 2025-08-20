@@ -63,7 +63,7 @@ public class UserController {
     //임시로 회원가입에 성공했을 때 리디렉션을 위한 컨트롤러
     @GetMapping("/register-success")
     public String registerSuccess() {
-        return "login";
+        return "public/login";
         // templates/register-success.html 필요
     }
 
@@ -71,7 +71,7 @@ public class UserController {
     @GetMapping("/login")
     public String showLoginForm(){
         new EncoderTest();
-        return "login";     //templates 아래의 login
+        return "public/login";     //public 아래의 login
     }
 
     public class EncoderTest {
@@ -119,7 +119,7 @@ public class UserController {
             System.out.println("DB에서 가져온 userEntity: " + user);
             System.out.println("패스워드 매치 결과: " + (user != null && passwordEncoder.matches(password, user.getPassword())));
 
-            return "login";
+            return "public/login";
         }
     }
 
@@ -129,7 +129,7 @@ public class UserController {
         User user = (User) session.getAttribute("loginUser");
 
         if (user == null) {
-            return "redirect:/login"; // 로그인 안 되어 있을 경우 처리
+            return "redirect:/public/login"; // 로그인 안 되어 있을 경우 처리
         }
 
         switch (user.getRole()) {
