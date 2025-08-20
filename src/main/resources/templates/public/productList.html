@@ -131,7 +131,7 @@
     <a th:if="${session.loginUser != null}" href="@{/user/logout}" class="logout-link">로그아웃</a>
 
     <!-- 비로그인 상태일 경우 -->
-    <a th:if="${session.loginUser == null}" href='@{/user/login}' class="login-link">로그인</a>
+    <a th:if="${session.loginUser == null}" href="@{/user/login}" class="login-link">로그인</a>
   </div>
 </div>
 
