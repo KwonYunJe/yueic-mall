@@ -16,4 +16,5 @@ spring:
         format_sql: true
 
 server:
+  forward-headers-strategy: framework
   port: 8003
